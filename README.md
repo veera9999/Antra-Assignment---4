@@ -22,7 +22,7 @@
 
 🎯 Inside the instance methods, **_this_** refers to the class itself.
 
-🎯 Static methods cannot directly access instance properties since they are not called on instances.
+🎯 Static methods cannot dir ectly access instance properties since they are not called on instances.
 
 🎯 Static methods perform operations that are related to the class but are not tied to any particular instance.
 
@@ -71,18 +71,119 @@ Javascript handles concurrency through event loop, asynchronous callbacks, promi
 
 ## What is async/await? How does it differ from using the promise instance methods?
 
-Async/Await is a syntactical feature available in javascript that makes working with promises in a structured manner. It helps in making the code look more synchronous, structured and readable. It makes the code behave synchronous. The **_async_** keyword is used to define a function asynchronous and it returns a promise. The **_await_** keyword is used to make the function wait for the promise to be resolved/rejected.
+Async/Await is a syntactical feature available in javascript that makes working with promises in a structured manner. It helps in making the code look more synchronous, structured and readable. It makes the code behave synchronous. The **_async_** keyword is used to define a function asynchronous and it returns a promise. The **_await_** keyword is used to make the function wait for the promise to be resolved/rejected. Promises have catch block at the end to handle errors after the promise.then chain which looks a lot like a mess in case of more promise chains. With async/await, you can use traditional try/catch block to handle errors which is easier to understand and maintain the code.
 
 ```js
-async function getActivity() {
+async function fetchRepos(username) {
+  const url = `https://api.github.com/users/${username}/repos`;
+
   try {
-    const response = await fetch("https://www.boredapi.com/api/activity");
+    let response = await fetch(url);
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
     let data = await response.json();
     console.log(data);
   } catch (error) {
-    console.log("Error : ", error);
+    console.error("Error:", error);
   }
 }
 
-getActivity();
+fetchRepos("octocat");
+```
+
+## Can you use await outside of an async function?
+
+No, we can't use await outside of an async function as await is specifically designed for using within async function to wait for the promises to be resolved/ rejected. if we try to use await outside of async functions, the javascript runtime will throw an error.
+
+## What is callback hell and why is it considered a problem?
+
+### Callback hell:
+
+Callback hell in javascript refers to a situation where callback functions are nested inorder to handle asynchronous operations.
+
+### Why is it considered a Problem?
+
+🎯 It makes it harder and difficult for the dvelopers to read and maintain the code because of it's heavily nested structure.
+
+🎯 The debugging will be harder as every callback in the nested structure should have it's own debugging function.
+
+### Solution:
+
+We can use async/await or promises to avoid callback hell in javascript.
+
+```js
+function task1(callback) {
+  setTimeout(() => {
+    console.log("Task 1 completed");
+    callback();
+  }, 2000);
+}
+
+function task2(callback) {
+  setTimeout(() => {
+    console.log("Task 2 completed");
+    callback();
+  }, 1000);
+}
+
+function task3(callback) {
+  setTimeout(() => {
+    console.log("Task 3 completed");
+    callback();
+  }, 1500);
+}
+
+function task4(callback) {
+  setTimeout(() => {
+    console.log("Task 4 completed");
+    callback();
+  }, 1300);
+}
+
+task1(() => {
+  task2(() => {
+    task3(() => {
+      task4(() => {
+        console.log("Successfully executed tasks!!");
+      });
+    });
+  });
+});
+```
+
+```js
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function task1() {
+  await delay(2000);
+  console.log("Task 1 completed");
+}
+
+async function task2() {
+  await delay(1000);
+  console.log("Task 2 completed");
+}
+
+async function task3() {
+  await delay(1500);
+  console.log("Task 3 completed");
+}
+
+async function task4() {
+  await delay(1300);
+  console.log("Task 4 completed");
+}
+
+async function runTasks() {
+  await task1();
+  await task2();
+  await task3();
+  await task4();
+  console.log("Successfully executed tasks!!");
+}
+
+runTasks();
 ```

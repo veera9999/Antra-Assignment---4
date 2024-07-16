@@ -40,19 +40,91 @@
 
 // getActivity();
 
-async function fetchRepos(username) {
-  const url = `https://api.github.com/users/${username}/repos`;
+// async function fetchRepos(username) {
+//   const url = `https://api.github.com/users/${username}/repos`;
 
-  try {
-    let response = await fetch("https://github.com/bobwen0205");
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    let data = await response.json();
-    console.log(data);
-  } catch (error) {
-    console.error("Error:", error);
-  }
+//   try {
+//     let response = await fetch("https://github.com/bobwen0205");
+//     if (!response.ok) {
+//       throw new Error("Network response was not ok");
+//     }
+//     let data = await response.json();
+//     console.log(data);
+//   } catch (error) {
+//     console.error("Error:", error);
+//   }
+// }
+
+// fetchRepos("veera9999");
+
+function task1(callback) {
+  setTimeout(() => {
+    console.log("Task 1 completed");
+    callback();
+  }, 2000);
 }
 
-fetchRepos("octocat");
+function task2(callback) {
+  setTimeout(() => {
+    console.log("Task 2 completed");
+    callback();
+  }, 1000);
+}
+
+function task3(callback) {
+  setTimeout(() => {
+    console.log("Task 3 completed");
+    callback();
+  }, 1500);
+}
+
+function task4(callback) {
+  setTimeout(() => {
+    console.log("Task 4 completed");
+    callback();
+  }, 1300);
+}
+
+task1(() => {
+  task2(() => {
+    task3(() => {
+      task4(() => {
+        console.log("Successfully executed tasks!!");
+      });
+    });
+  });
+});
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function task1() {
+  await delay(2000);
+  console.log("Task 1 completed");
+}
+
+async function task2() {
+  await delay(1000);
+  console.log("Task 2 completed");
+}
+
+async function task3() {
+  await delay(1500);
+  console.log("Task 3 completed");
+}
+
+async function task4() {
+  await delay(1300);
+  console.log("Task 4 completed");
+}
+
+async function runTasks() {
+  await task1();
+  await task2();
+  await task3();
+  await task4();
+  console.log("Successfully executed tasks!!");
+}
+
+runTasks();
